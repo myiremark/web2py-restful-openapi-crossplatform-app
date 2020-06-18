@@ -1,0 +1,13 @@
+.DS_Store
+
+*.pyc
+server/web2py/applications/*/uploads/*
+server/web2py/applications/*/errors/*
+server/web2py/applications/*/databases/*
+server/web2py/applications/*/sessions/*
+server/web2py/httpserver.log
+server/web2py/httpserver.pid
+server/web2py/parameters_*.py
+
+client/ionic/node_modules/
+

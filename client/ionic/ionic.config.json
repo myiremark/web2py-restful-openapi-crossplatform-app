@@ -1,0 +1,7 @@
+{
+  "name": "web2py-restful-openapi-client",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react"
+}
