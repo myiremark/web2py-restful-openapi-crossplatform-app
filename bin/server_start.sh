@@ -1,7 +1,7 @@
 #! /bin/bash
 
 export WORKON_HOME=$HOME/.virtualenvs
-source /Users/markgraves/Library/Python/2.7/bin/virtualenvwrapper.sh;
+source ~/Library/Python/2.7/bin/virtualenvwrapper.sh;
 
 workon crossplatform;
 
