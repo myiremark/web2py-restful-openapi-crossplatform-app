@@ -22,6 +22,8 @@ def swagger():
 
     result["paths"] = converter.db_patterns_to_swagger_paths(db)
 
+    custom_paths = converter.custom_paths()
+
     result["paths"].update(custom_paths)
 
     return response.json(result)
