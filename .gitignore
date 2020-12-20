@@ -2,6 +2,10 @@
 
 *.pyc
 .vagrant/*
+
+ubuntu-xenial-16.04-cloudimg-console.log
+.vagrant/
+
 server/web2py/applications/*/uploads/*
 server/web2py/applications/*/errors/*
 server/web2py/applications/*/databases/*
