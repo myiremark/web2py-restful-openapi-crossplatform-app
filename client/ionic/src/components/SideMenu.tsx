@@ -13,7 +13,7 @@ import {
 
 import {AppName} from '../constants';
 import AppRoutes from '../routes';
-import Auth from '../Auth';
+import Auth from '../services/Auth';
 
 const CommonMenu: React.FC = () => {
   return (

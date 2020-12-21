@@ -3,7 +3,7 @@
 converter = pyDalSwaggerConverter(configuration,request,db)
 
 def swagger():
-
+        
     result = converter.dal_to_swagger(db)
 
     updatedSchemas = collections.OrderedDict()
@@ -22,10 +22,16 @@ def swagger():
 
     result["paths"] = converter.db_patterns_to_swagger_paths(db)
 
-    custom_paths = converter.custom_paths()
+    static_paths = converter.static_element("paths")
+    static_schemas = converter.static_element("schemas")
 
-    result["paths"].update(custom_paths)
+    result["paths"].update(static_paths)
+    result["components"]["schemas"].update(static_schemas)
 
+    if request.vars.static_only:
+        result["paths"] = static_paths
+        result["components"]["schemas"]= static_schemas
+        
     return response.json(result)
 
 

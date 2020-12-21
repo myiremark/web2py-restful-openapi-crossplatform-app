@@ -15,7 +15,7 @@ import {
 import {Header} from '../../components/Header';
 
 import '../../theme/ExploreContainer.css';
-import Auth from '../../Auth';
+import Auth from '../../services/Auth';
 
 interface Props {
   auth: Auth;

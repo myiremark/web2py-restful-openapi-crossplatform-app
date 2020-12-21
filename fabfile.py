@@ -12,9 +12,14 @@ from invoke import run
 
 BASE_DIR = "/opt/src"
 
-OPENAPI_GENERATOR_VERSION="4.3.1"
+OPENAPI_GENERATOR_VERSION="5.0.0-beta2"
+OPENAPI_GENERATOR_LIBRARY_NAME="web2pyrestful"
 DEV_WEB_CLIENT_IP="192.168.205.21"
 RELATIVE_PATH_TO_API_FILE = "api/swagger.json"
+OPENAPI_STATIC_RELATIVE_DIR = "server/web2py/applications/api/private/openapi_static/"
+
+
+print "WARNING: THESE ARE SUPPOSED TO BE RUN IN A VIRTUAL MACHINE"
 
 @task
 def generateAPISpec(ctx):
@@ -27,11 +32,11 @@ def generateAPISpec(ctx):
 
 
 @task
-def compileAPIClient(ctx):
+def generateAPISpecClient(ctx):
     """generates a new Typescript rest client api from swagger.json on disk"""
     relative_path_to_api_file = RELATIVE_PATH_TO_API_FILE
-    relative_path_to_libs_dir = "client/ionic/src/services/"
-    output_api_library_name = "web2pyrestful"
+    relative_path_to_libs_dir = "client/ionic/src/lib/"
+    output_api_library_name = OPENAPI_GENERATOR_LIBRARY_NAME
     
     relative_path_to_lib_output = relative_path_to_libs_dir + output_api_library_name
 
@@ -50,6 +55,34 @@ def compileAPIClient(ctx):
     
     cmd = docker_command + " " + shell_cmd
 
+    result = run(cmd, hide=False, warn=True)
+
+
+@task
+def extractSchemasAndPathsFromEditorOutput(ctx):
+    """ parses editor-output.json into separate paths.json and schemas.json files for autogenerator to load 
+    
+        this was done so you can edit the schemas and merge them
+    """
+    path_base = OPENAPI_STATIC_RELATIVE_DIR
+    path_editor_output = path_base + "editor-output.json"
+    path_schemas_input = path_base + "schemas.json"
+    path_paths_input = path_base + "paths.json"
+
+    contents = json.load(open(path_editor_output,"r"))
+    schemas = contents["components"]["schemas"]
+    paths = contents["paths"]
+
+    json.dump(paths,open(path_paths_input,"w"))
+    json.dump(schemas,open(path_schemas_input,"w"))
+
+
+
+@task
+def startAPISpecEditor(ctx):
+    """starts swagger editor ui on 192.168.205.21:8080"""
+    cmd = "docker-compose -f env/development/swagger-editor.yml up -d"
+    print cmd
     result = run(cmd, hide=False, warn=True)
 
 @task
@@ -80,6 +113,15 @@ def startES(ctx):
     cmd = "docker-compose -f server/elasticsearch/docker-compose.yml up -d"
     result = run(cmd, hide=False, warn=True)
     
+@task
+def testDockerCompose(ctx):
+    """turns on and off a busybox image using docker-compose"""
+    cmd = "docker-compose -f tests/docker-compose.yml up -d"
+    result = run(cmd, hide=False, warn=True)
+    assert(result.ok)
+    cmd = "docker-compose -f tests/docker-compose.yml down"
+    result = run(cmd, hide=False, warn=True)
+    assert(result.ok)
 
 @task
 def typescriptDebug(ctx):
@@ -87,3 +129,4 @@ def typescriptDebug(ctx):
     path = BASE_DIR + "/client/ionic"
     cmd = "cd %s && tsc --noEmit --diagnostics " % path
     result = run(cmd, hide=False, warn=True)
+

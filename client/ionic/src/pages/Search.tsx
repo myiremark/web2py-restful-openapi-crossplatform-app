@@ -32,7 +32,7 @@ import '../theme/search.css';
 
 import MetaHitsListItem from '../components/Search/HitsListItem';
 
-import API from '../api';
+import API from '../apistaticroutes';
 
 import {searchSortingConfig} from '../constants';
 import {Header} from '../components/Header';

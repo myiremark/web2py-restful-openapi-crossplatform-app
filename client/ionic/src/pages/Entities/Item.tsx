@@ -14,17 +14,17 @@ import {RouteComponentProps} from 'react-router-dom';
 import Form from '@rjsf/material-ui';
 import {ISubmitEvent, IChangeEvent} from '@rjsf/core';
 
-import Auth from '../../Auth';
+import Auth from '../../services/Auth';
 import {Header} from '../../components/Header';
-import API from '../../api';
+import API from '../../apistaticroutes';
 
 import {JSONSchema7} from 'json-schema';
 import CartService from '../../services/Cart';
 import AppRoutes from '../../routes';
 
-import {DefaultApi, Configuration} from '../../services/web2pyrestful/';
+import {DefaultApi, Configuration} from '../../lib/web2pyrestful';
 
-import {InventoryItem,PurchaseOrder} from '../../services/web2pyrestful/api'
+import {InventoryItem,PurchaseOrder} from '../../lib/web2pyrestful/api'
 import { jsonSchemaUiSchema } from '../../constants';
 
 
