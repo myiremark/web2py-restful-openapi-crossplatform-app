@@ -1,5 +1,5 @@
 import React from 'react';
-import Auth from '../../Auth';
+import Auth from '../../services/Auth';
 
 interface Props {
   auth: Auth;

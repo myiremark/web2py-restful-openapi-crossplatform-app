@@ -11,11 +11,12 @@ import {
     IonItemOption,
   } from '@ionic/react';
   import React from 'react';
-  import Auth from '../Auth';
+  import Auth from '../services/Auth';
+  import APIService from '../services/API';
   import {Header} from '../components/Header';
   import {RouteComponentProps} from 'react-router-dom';
   import AppRoutes from '../routes';
-  import {DefaultApi, Configuration, PurchaseOrder} from '../services/web2pyrestful/';
+  import {PurchaseOrder} from '../lib/web2pyrestful';
 
   import CartService from '../services/Cart'
   
@@ -42,7 +43,7 @@ import {
   }
   
   export default class Cart extends React.Component<Props, State> {
-    private api: DefaultApi = new DefaultApi(new Configuration());
+    private api: APIService = new APIService();
 
     constructor(props: Props) {
       super(props);
@@ -52,20 +53,14 @@ import {
     }
   
      fetchData = async()=> {
-      const auth = this.props.auth;
 
       const itemIds = this.props.cartService.retrieveItems();
 
       let entities = [] as inventoryItem[];
 
-      const requestHeaders = await auth.authenticatedHeaders();
-      const requestOptions = {
-        headers: requestHeaders,
-      };
-
       for (const itemId of itemIds) {
         // normal for loop for async
-          let entity = (await this.api.getEntityById("inventoryItem",itemId,requestOptions)).data as inventoryItem;
+          let entity = (await this.api.service.getEntityById("inventoryItem",itemId)).data as inventoryItem;
 
           entity.id = itemId;
         entities.push(entity);
@@ -83,16 +78,10 @@ import {
     }
 
     createPurchaseOrder= async(inventoryItems:string[])=>{
-        const auth = this.props.auth;
   
-        const requestHeaders = await auth.authenticatedHeaders();
-        const requestOptions = {
-          headers: requestHeaders,
-        };
-
         const inventoryItemPurchaseOrder = {inventoryItems} as PurchaseOrder;
   
-        return await this.api.createEntity("purchaseOrder",inventoryItemPurchaseOrder,requestOptions);
+        return await this.api.service.createEntity("purchaseOrder",inventoryItemPurchaseOrder);
     }
 
     onCheckout = async()=> {

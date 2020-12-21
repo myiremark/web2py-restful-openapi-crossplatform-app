@@ -1,6 +1,6 @@
 import {apiBaseUrl,elasticsearchHost,elasticsearchIndex} from './constants';
 
-const API = {
+const API_STATIC_ROUTES = {
   searchEndpoint() {
     return elasticsearchHost + '/' + elasticsearchIndex +'/';
   },
@@ -30,4 +30,4 @@ const API = {
   }
 };
 
-export default API;
+export default API_STATIC_ROUTES;

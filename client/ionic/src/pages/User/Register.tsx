@@ -13,7 +13,7 @@ import {
   IonCardContent,
 } from '@ionic/react';
 import {Header} from '../../components/Header';
-import Auth from '../../Auth';
+import Auth from '../../services/Auth';
 
 import '../../theme/ExploreContainer.css';
 

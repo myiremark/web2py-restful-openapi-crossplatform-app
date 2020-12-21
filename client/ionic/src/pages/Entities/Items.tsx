@@ -8,13 +8,13 @@ import {
   IonButton
 } from '@ionic/react';
 import React from 'react';
-import Auth from '../../Auth';
+import Auth from '../../services/Auth';
 import {Header} from '../../components/Header';
 import {RouteComponentProps} from 'react-router-dom';
 
 import AppRoutes from '../../routes';
 
-import {DefaultApi, Configuration} from '../../services/web2pyrestful/';
+import APIService from '../../services/API';
 
 interface MatchParams {
   entityType: string;
@@ -41,6 +41,7 @@ interface State {
 }
 
 export default class Items extends React.Component<Props, State> {
+  private api: APIService = new APIService();
 
   constructor(props: Props) {
     super(props);
@@ -51,19 +52,9 @@ export default class Items extends React.Component<Props, State> {
 
   async fetchData() {
 
-    const auth = this.props.auth;
-
-    const restfulApi = new DefaultApi(new Configuration());
-
     const entityType = this.props.entityType;
 
-    const requestHeaders = await auth.authenticatedHeaders();
-    const requestOptions = {
-      method: 'GET',
-      headers: requestHeaders,
-    };
-
-    const entities = await (await restfulApi.getEntityIndex(entityType,requestOptions)).data  as inventoryItem[];
+    const entities = await (await this.api.service.getEntityIndex(entityType)).data  as inventoryItem[];
 
     this.setState({entities});
   }

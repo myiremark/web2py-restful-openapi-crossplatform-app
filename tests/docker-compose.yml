@@ -1,0 +1,5 @@
+version: '2'
+services:
+  busybox-test:
+    image: busybox
+    container_name: busybox-test

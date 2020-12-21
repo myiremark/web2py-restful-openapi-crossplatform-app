@@ -29,6 +29,9 @@ export const AppRoutes = {
   entityViewByType(entityType: string, entityId: string) {
     return '/user/' + entityType + '/view/'+ entityId;
   },
+  authenticatedDefaultRoute(){
+    return AppRoutes.entityIndexByType("inventoryItem")
+  }
 };
 
 export default AppRoutes;

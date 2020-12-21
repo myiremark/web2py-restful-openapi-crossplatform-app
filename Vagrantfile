@@ -1,6 +1,12 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
+# WARNING: THIS IS INTENDED TO BE RUN ON A VIRTUAL MACHINE.
+
+# DO NOT JUST COPY THIS SCRIPT AND RUN THIS SCRIPT ON YOUR LOCAL MACHINE.
+
+# IT CATS SSH KEYS INTO authorized_keys
+
 USE_APT_PROXY = false
 USE_APT_CACHE = false
 APT_CACHE_HOST_DIR = ""
@@ -87,7 +93,7 @@ export NODE_OPTIONS=--max-old-space-size="$NODE_MAX_MEMORY_MB"
 
 npm install typescript@3.8.3 --unsafe-perm
 npm install react@^16.13.0 --unsafe-perm
-npm install @ionic/cli
+npm install @ionic/cli -g
 npm install node-sass --unsafe-perm
 
 # install client libraries
@@ -111,6 +117,9 @@ echo "you may need to"
 echo "pip uninstall pyopenssl"
 echo "then"
 echo "pip install pyopenssl"
+
+# in dev on a vm, lets do everything as root to avoid permissions issues
+sudo cat /home/vagrant/.ssh/authorized_keys >> /root/.ssh/authorized_key
 
 SCRIPT
 
