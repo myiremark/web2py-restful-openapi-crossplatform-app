@@ -1,0 +1,19 @@
+version: '3.0'
+services:
+  registry_development:
+    image: registry:2
+    container_name: registry_development
+    environment:
+      - REGISTRY_DELETE_ENABLED=true 
+    volumes:
+      - registry_development:/var/lib/registry
+    ports:
+      - "0.0.0.0:25000:5000"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "wget http://127.0.0.1:5000/v2/_catalog --spider"]
+      interval: 60s
+      timeout: 5s
+      retries: 5
+volumes:
+  registry_development:

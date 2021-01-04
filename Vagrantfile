@@ -7,9 +7,9 @@
 
 # IT CATS SSH KEYS INTO authorized_keys
 
-USE_APT_PROXY = false
-USE_APT_CACHE = false
-APT_CACHE_HOST_DIR = ""
+USE_APT_PROXY = true
+USE_APT_CACHE = true
+APT_CACHE_HOST_DIR = "/opt/SPADevCluster"
 
 DEV_BOX_NAME = "development"
 DEV_BOX_CLUSTER = "SPADevCluster"
@@ -34,6 +34,9 @@ $configureDevBox = <<-SCRIPT
 
 echo "Bootstrapping development box"
 
+# Node complains about too many open files otherwise
+sysctl -w fs.inotify.max_user_watches=524288
+
 NODE_MAX_MEMORY_MB="8192"
 
 export NVM_DIR="/root/.nvm"
@@ -46,80 +49,47 @@ sudo apt-get update;
 
 # install dev utilities
 
-sudo apt-get install -y curl gnupg2 ca-certificates jq;
+sudo apt-get install -y curl gnupg2 ca-certificates jq unzip;
 
 # install pip (python)
 sudo apt-get install -y python-pip
 
-# install docker (17.03)
 
-apt-get install -y apt-transport-https ca-certificates curl software-properties-common
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
-add-apt-repository "deb https://download.docker.com/linux/$(. /etc/os-release; echo "$ID") $(lsb_release -cs) stable"
-apt-get update && apt-get install -y docker-ce=$(apt-cache madison docker-ce | grep 17.03 | head -1 | awk '{print $3}') docker-compose
+/opt/src/bin/docker/install_docker_ubuntu_18.sh
 
 # Install nvm, node, and npm -- bad practice to pipe a script here.  do so at your own risk
 
-sudo curl https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash ;
+/opt/src/bin/node/install_nvm.sh
 
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" && nvm install $NODE_VERSION && nvm alias default $NODE_VERSION && nvm use $NODE_VERSION
+# Install typescript, peer dependencies, and package.json
 
-# Node complains about too many open files otherwise
-sysctl -w fs.inotify.max_user_watches=524288
+export CLIENT_PROJECT_BASE_PATH="/opt/src";
 
-# do this again after install to make sure root shell has this
+#/opt/src/bin/node/install_dev_web_client.sh
 
-# Ensure NVM is loaded.
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-
-# Load Bash Completion
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-
-# Install dev web client
-
-cd /opt/src/client/ionic;
-
-# make sure node is not memory limited
-
-export NODE_OPTIONS=--max-old-space-size="$NODE_MAX_MEMORY_MB"
-
-# Manually install client peer dependencies
-#
-# Note: 
-#   We use --unsafe-perm here 
-#   because this is mounted inside a Vagrant virtual machine 
-#   which has known file system permission issues.
-#   short version: you think you're root, but you're not with vagrant mounts
-
-npm install typescript@3.8.3 --unsafe-perm
-npm install react@^16.13.0 --unsafe-perm
-npm install @ionic/cli -g
-npm install node-sass --unsafe-perm
-
-# install client libraries
-
-npm install --unsafe-perm
+# Install server side dev requirements (fabric, docker-compose)
 
 sudo pip install --upgrade pip;
 
-# install dev-requirements (peer dependencies for python)
+echo "export WORKON_HOME=/opt/virtualenvs;source /usr/local/bin/virtualenvwrapper.sh;">>/root/.bashrc
+pip install virtualenvwrapper;
+export WORKON_HOME=/opt/virtualenvs;
+source /usr/local/bin/virtualenvwrapper.sh
+mkvirtualenv spa;
+workon spa;
 
-cd /opt/src;
+/opt/src/bin/install_server_side_dev_requirements.sh
 
-sudo pip install -r dev-requirements.txt
+cd /opt/src/vendor;
 
-cd server/web2py
+#wget https://mdipierro.pythonanywhere.com/examples/static/web2py_src.zip;
 
-sudo pip install -r requirements.txt
+unzip -o web2py_src.zip;
 
-echo "NOTE: if docker-compose is not working:"
-echo "you may need to"
-echo "pip uninstall pyopenssl"
-echo "then"
-echo "pip install pyopenssl"
+
 
 # in dev on a vm, lets do everything as root to avoid permissions issues
-sudo cat /home/vagrant/.ssh/authorized_keys >> /root/.ssh/authorized_key
+sudo cat /home/vagrant/.ssh/authorized_keys >> /root/.ssh/authorized_keys
 
 SCRIPT
 

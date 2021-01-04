@@ -1,0 +1,19 @@
+version: '3'
+services:
+  db_development:
+    container_name: db_development
+    image: postgres:9.6
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=development_user
+      - POSTGRES_PASSWORD=development_password
+      - POSTGRES_DB=db_development
+    ports:
+      - 0.0.0.0:5432:5432
+    volumes:
+      - ./tmp/db_development/postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U development_user -d db_development"]
+      interval: 10s
+      timeout: 5s
+      retries: 5

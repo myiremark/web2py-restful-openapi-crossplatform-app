@@ -1,0 +1,15 @@
+version: '3'
+services:
+  infra-controller-development:
+    image: 127.0.0.1:25000/infra-controller:0.0.1
+    build: 
+      context: .
+      dockerfile: ./docker/services/infra-controller.Dockerfile
+    container_name: infra-controller-development
+    stdin_open: true # docker run -i
+    tty: true        # docker run -t
+    volumes:
+      - ./:/opt/src
+    environment:
+      TERRAFORM_CLUSTER_ENV: development
+    hostname: infra-controller-development

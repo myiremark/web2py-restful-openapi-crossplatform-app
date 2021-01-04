@@ -1,0 +1,84 @@
+version: '3'
+services:
+  buildbot-config:
+    container_name: buildbot-config
+    image: 127.0.0.1:25000/buildbot_config:0.0.70
+    build:
+      context: .
+      dockerfile: ./docker/services/buildbotConfig.Dockerfile
+    healthcheck:
+      test: ["CMD-SHELL", "wget 127.0.0.1/buildbot_master.cfg --spider"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  buildbot:
+    container_name: buildbot
+    image: 127.0.0.1:25000/buildbot_master:0.0.1
+    build:
+      context: .
+      dockerfile: ./docker/services/buildbotMaster.Dockerfile
+    env_file:
+      - ./var/development/buildbot.env
+    links:
+      - buildbot_db
+      - buildbot-config
+    depends_on:
+      - buildbot_db
+      - buildbot-config
+    ports:
+      - "8010:8010"
+
+  buildbot_db:
+    container_name: buildbot_db
+    env_file:
+      - ./var/development/buildbot.env
+    image: postgres:9.6
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U buildbot -d buildbot"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  buildbot_worker:
+    container_name: buildbot_worker
+    image: 127.0.0.1:25000/buildbot_worker:0.0.14
+    build:
+      context: .
+      dockerfile: ./docker/services/buildbotClientBuilderWorker.Dockerfile
+    env_file:
+      - ./var/development/buildbot.env
+    environment:
+      - WORKERNAME=buildbot_worker
+    links:
+      - buildbot
+    depends_on:
+      - buildbot
+
+  buildbot_worker_front_end_base:
+    container_name: buildbot_worker_front_end_base
+    image: 192.168.205.21:25000/buildbot_worker_front_end:0.0.3
+    build:
+      context: .
+      dockerfile: ./docker/services/buildbotClientBuilderWorker.Dockerfile
+    env_file:
+      - ./var/development/buildbot.env
+    links:
+      - buildbot
+    depends_on:
+      - buildbot
+    restart: "no"
+
+  buildbot_worker_back_end_base:
+    container_name: buildbot_worker_back_end_base
+    image: 192.168.205.21:25000/buildbot_worker_back_end:0.0.3
+    build:
+      context: .
+      dockerfile: ./docker/services/buildbotServerBuilderWorker.Dockerfile
+    env_file:
+      - ./var/development/buildbot.env
+    links:
+      - buildbot
+    depends_on:
+      - buildbot
+    restart: "no"

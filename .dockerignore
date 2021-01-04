@@ -1,0 +1,4 @@
+tmp/
+.git/
+.vagrant/
+src/client/ionic/node_modules/

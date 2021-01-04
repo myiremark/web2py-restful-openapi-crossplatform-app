@@ -1,0 +1,20 @@
+version: '3'
+services:  
+  api_development:
+    container_name: api_development
+    image: 127.0.0.1:25000/api_development:0.0.1
+    build:
+      context: .
+      dockerfile: ./docker/services/api.Dockerfile
+    restart: unless-stopped
+    ports:
+      - 8000:8000
+    volumes:
+      - ./src/server/web2py/applications/api:/opt/web2py/applications/api
+    command: ["python", "web2py.py","-a","password","--no-gui", "-i", "0.0.0.0", "-p", "8000"]
+    working_dir: "/opt/web2py"
+    healthcheck:
+      test: ["CMD-SHELL", "curl 127.0.0.1:8000/api/default/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
