@@ -6,14 +6,17 @@
 ubuntu-xenial-16.04-cloudimg-console.log
 .vagrant/
 
-server/web2py/applications/*/uploads/*
-server/web2py/applications/*/errors/*
-server/web2py/applications/*/databases/*
-server/web2py/applications/*/sessions/*
-server/web2py/httpserver.log
-server/web2py/httpserver.pid
-server/web2py/parameters_*.py
+src/server/web2py/applications/*/uploads/*
+src/server/web2py/applications/*/errors/*
+src/server/web2py/applications/*/databases/*
+src/server/web2py/applications/*/sessions/*
+src/server/web2py/httpserver.log
+src/server/web2py/httpserver.pid
+src/server/web2py/parameters_*.py
 
-client/ionic/node_modules/
+src/client/ionic/node_modules/
 
 ubuntu-xenial-16.04-cloudimg-console.log
+
+vendor/
+!vendor/.gitkeep

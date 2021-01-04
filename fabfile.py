@@ -35,7 +35,7 @@ def generateAPISpec(ctx):
 def generateAPISpecClient(ctx):
     """generates a new Typescript rest client api from swagger.json on disk"""
     relative_path_to_api_file = RELATIVE_PATH_TO_API_FILE
-    relative_path_to_libs_dir = "client/ionic/src/lib/"
+    relative_path_to_libs_dir = "src/client/ionic/src/lib/"
     output_api_library_name = OPENAPI_GENERATOR_LIBRARY_NAME
     
     relative_path_to_lib_output = relative_path_to_libs_dir + output_api_library_name
