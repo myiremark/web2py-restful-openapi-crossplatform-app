@@ -60,7 +60,7 @@
     "@types/node": "^13.11.1",
     "@types/swagger-ui-react": "^3.23.2",
     "gts": "^2.0.2",
-    "node-sass": "^4.14.1",
+    "node-sass": "^7.0.0",
     "prettier": "^2.0.5",
     "react-scripts": "^3.4.1",
     "swagger-client": "^3.10.7",
